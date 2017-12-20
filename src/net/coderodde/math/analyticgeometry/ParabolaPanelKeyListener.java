@@ -22,6 +22,7 @@ public class ParabolaPanelKeyListener implements KeyListener {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
                 parabolaPanel.setCenterY(parabolaPanel.getCenterY() + 0.01);
+                System.out.println("yo!");
                 break;
                 
             case KeyEvent.VK_DOWN:
@@ -53,7 +54,7 @@ public class ParabolaPanelKeyListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("fdsaaa");
+        
     }
 
     @Override

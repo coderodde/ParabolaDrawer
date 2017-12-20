@@ -11,14 +11,12 @@ import javax.swing.JFrame;
  * @author Rodion "rodde" Efremov
  * @version 1.6 (Dec 20, 2017)
  */
-public class ParabolaDrawer extends JFrame {
+public final class ParabolaDrawer extends JFrame {
 
     private static final double DEFAULT_VERTEX_X = 0.0;
     private static final double DEFAULT_VERTEX_Y = 0.0;
     private static final double DEFAULT_ALPHA = 0.0;
     private static final double DEFAULT_BETA = 1.0;
-    
-    private final ParabolaPanel panel;
     
     public ParabolaDrawer() {
         Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -26,17 +24,19 @@ public class ParabolaDrawer extends JFrame {
                                                              DEFAULT_VERTEX_Y,
                                                              DEFAULT_ALPHA,
                                                              DEFAULT_BETA);
-        this.panel = new ParabolaPanel(parabola);
-        
+        ParabolaPanel panel = new ParabolaPanel(parabola);
         ParabolaPanelKeyListener keyListener = new ParabolaPanelKeyListener();
-        keyListener.setParabolaPanel(this.panel);
-        this.getContentPane().addKeyListener(keyListener);
-        this.panel.addKeyListener(keyListener);
-        this.getContentPane().add(this.panel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(screenDimension);
-        this.setResizable(false);
-        this.setVisible(true);
+        keyListener.setParabolaPanel(panel);
+        getContentPane().add(panel);
+        panel.addKeyListener(keyListener);
+        panel.setFocusable(true);
+        panel.requestFocus();
+        addKeyListener(keyListener);
+        getContentPane().addKeyListener(keyListener);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(screenDimension);
+        setResizable(false);
+        setVisible(true);
     }
     
     public static void main(String[] args) {

@@ -130,6 +130,7 @@ public final class ParabolaPanel
         g.setColor(getXAxisColor());
         int width = getWidth();
         int height = getHeight();
+        System.out.println("centerY: " + centerY);
         int targetHeight = (height >>> 1) - (int)(centerY / unitsPerPixel);
         g.drawLine(0, targetHeight, width, targetHeight);
     }

@@ -27,7 +27,13 @@ public class ParabolaDrawer extends JFrame {
                                                              DEFAULT_ALPHA,
                                                              DEFAULT_BETA);
         this.panel = new ParabolaPanel(parabola);
+        
+        ParabolaPanelKeyListener keyListener = new ParabolaPanelKeyListener();
+        keyListener.setParabolaPanel(this.panel);
+        this.getContentPane().addKeyListener(keyListener);
+        this.panel.addKeyListener(keyListener);
         this.getContentPane().add(this.panel);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(screenDimension);
         this.setResizable(false);
         this.setVisible(true);

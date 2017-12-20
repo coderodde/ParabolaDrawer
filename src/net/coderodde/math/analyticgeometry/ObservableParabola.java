@@ -16,7 +16,6 @@ public final class ObservableParabola {
     private final Point2D.Double vertex;
     private double alpha;
     private double beta;
-    
     private final List<ParabolaParameterListener> parameterListeners = 
             new ArrayList<>();
     
@@ -98,8 +97,8 @@ public final class ObservableParabola {
     }
     
     private void notifyAllListeners() {
-        for (ParabolaParameterListener listener : parameterListeners) {
+        parameterListeners.forEach((listener) -> {
             listener.onParabolaParameterChange();
-        }
+        });
     }
 }

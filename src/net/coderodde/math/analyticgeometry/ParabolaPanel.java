@@ -1,5 +1,6 @@
 package net.coderodde.math.analyticgeometry;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Objects;
 import javax.swing.JPanel;
@@ -17,11 +18,15 @@ public final class ParabolaPanel
     private static final double DEFAULT_UNITS_PER_PIXEL = 0.002;
     private static final double DEFAULT_CENTER_X = 0.0;
     private static final double DEFAULT_CENTER_Y = 0.0;
+    private static final Color DEFAULT_X_AXIS_COLOR = Color.RED;
+    private static final Color DEFAULT_Y_AXIS_COLOR = Color.BLUE;
     
-    private final double unitsPerPixel;
-    private final double centerX;
-    private final double centerY;
+    private double unitsPerPixel;
+    private double centerX;
+    private double centerY;
     private final ObservableParabola parabola;
+    private Color xAxisColor;
+    private Color yAxisColor;
     
     public ParabolaPanel(ObservableParabola parabola) {
         this.parabola = 
@@ -29,15 +34,111 @@ public final class ParabolaPanel
         this.unitsPerPixel = DEFAULT_UNITS_PER_PIXEL;
         this.centerX = DEFAULT_CENTER_X;
         this.centerY = DEFAULT_CENTER_Y;
+        this.xAxisColor = DEFAULT_X_AXIS_COLOR;
+        this.yAxisColor = DEFAULT_Y_AXIS_COLOR;
+        this.setBackground(Color.WHITE);
     }
     
     @Override
     public void paintComponent(Graphics g) {
-        
+        paintBackground(g);
+        paintAxes(g);
+        paintParabola(g);
+    }
+    
+    public double getUnitsPerPixel() {
+        return unitsPerPixel;
+    }
+    
+    public double getCenterX() {
+        return centerX;
+    }
+    
+    public double getCenterY() {
+        return centerY;
+    }
+    
+    public Color getXAxisColor() {
+        return xAxisColor;
+    }
+    
+    public Color getYAxisColor() {
+        return yAxisColor;
+    }
+    
+    public void setUnitsPerPixel(double unitsPerPixel) {
+        this.unitsPerPixel = checkUnitsPerPixel(unitsPerPixel);
+    }
+    
+    public void setCenterX(double centerX) {
+        this.centerX = checkNotNaN(centerX, "The x-coordinate is NaN.");
+    }
+    
+    public void setCenterY(double centerY) {
+        this.centerY = checkNotNaN(centerY, "The y-coordinate is NaN.");
+    }
+    
+    public void setXAxisColor(Color color) {
+        this.xAxisColor = Objects.requireNonNull(color, "The color is null.");
+    }
+    
+    public void setYAxisColor(Color color) {
+        this.yAxisColor = Objects.requireNonNull(color, "The color is null.");
     }
 
     @Override
     public void onParabolaParameterChange() {
         repaint();
+    }
+    
+    private double checkUnitsPerPixel(double unitsPerPixel) {
+        if (Double.isNaN(unitsPerPixel)) {
+            throw new IllegalArgumentException("unitsPerPixel is NaN.");
+        }
+        
+        if (unitsPerPixel <= 0.0) {
+            throw new IllegalArgumentException(
+                    "unitsPerPixel is too small: " + unitsPerPixel + ". " +
+                    "Must be positive.");
+        }
+        
+        return unitsPerPixel;
+    }
+    
+    private double checkNotNaN(double value, String errorMessage) {
+        if (Double.isNaN(value)) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+        
+        return value;
+    }
+    
+    private void paintBackground(Graphics g) {
+        g.clearRect(0, 0, getWidth(), getHeight());
+    }
+    
+    private void paintAxes(Graphics g) {
+        paintXAxis(g);
+        paintYAxis(g);
+    }
+    
+    private void paintParabola(Graphics g) {
+       
+    }
+    
+    private void paintXAxis(Graphics g) {
+        g.setColor(getXAxisColor());
+        int width = getWidth();
+        int height = getHeight();
+        int targetHeight = (height >>> 1) - (int)(centerY / unitsPerPixel);
+        g.drawLine(0, targetHeight, width, targetHeight);
+    }
+    
+    private void paintYAxis(Graphics g) {
+        g.setColor(getYAxisColor());
+        int width = getWidth();
+        int height = getHeight();
+        int targetWidth = (width >>> 1) - (int)(centerX / unitsPerPixel);
+        g.drawLine(targetWidth, 0, targetWidth, height);
     }
 }

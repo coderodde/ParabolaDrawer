@@ -20,41 +20,57 @@ public class ParabolaPanelKeyListener implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-                parabolaPanel.setCenterY(parabolaPanel.getCenterY() + 0.01);
-                System.out.println("yo!");
-                break;
-                
-            case KeyEvent.VK_DOWN:
-                parabolaPanel.setCenterY(parabolaPanel.getCenterY() - 0.01);
-                break;
-                
-            case KeyEvent.VK_LEFT:
-                parabolaPanel.setCenterX(parabolaPanel.getCenterX() + 0.01);
-                break;
-                
-            case KeyEvent.VK_RIGHT:
-                parabolaPanel.setCenterX(parabolaPanel.getCenterX() - 0.01);
-                break;
-                
             case KeyEvent.VK_W:
                 double zoom = parabolaPanel.getUnitsPerPixel();
                 parabolaPanel.setUnitsPerPixel(zoom * 1.1);
+                parabolaPanel.repaint();
                 break;
                 
             case KeyEvent.VK_S:
                 zoom = parabolaPanel.getUnitsPerPixel();
                 parabolaPanel.setUnitsPerPixel(zoom / 1.1);
+                parabolaPanel.repaint();
+                System.out.println("zoom: " + parabolaPanel.getUnitsPerPixel());
                 break;
         }
-        
-        parabolaPanel.repaint();
-        System.out.println("fsfas");
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                parabolaPanel.setCenterY(parabolaPanel.getCenterY() + 0.01);
+                parabolaPanel.repaint();
+                break;
+                
+            case KeyEvent.VK_DOWN:
+                parabolaPanel.setCenterY(parabolaPanel.getCenterY() - 0.01);
+                parabolaPanel.repaint();
+                break;
+                
+            case KeyEvent.VK_LEFT:
+                parabolaPanel.setCenterX(parabolaPanel.getCenterX() + 0.01);
+                parabolaPanel.repaint();
+                break;
+                
+            case KeyEvent.VK_RIGHT:
+                parabolaPanel.setCenterX(parabolaPanel.getCenterX() - 0.01);
+                parabolaPanel.repaint();
+                break;
+                
+            case KeyEvent.VK_W:
+                double zoom = parabolaPanel.getUnitsPerPixel();
+                parabolaPanel.setUnitsPerPixel(zoom * 1.1);
+                parabolaPanel.repaint();
+                break;
+
+            case KeyEvent.VK_S:
+                zoom = parabolaPanel.getUnitsPerPixel();
+                parabolaPanel.setUnitsPerPixel(zoom / 1.1);
+                parabolaPanel.repaint();
+                System.out.println("zoom: " + parabolaPanel.getUnitsPerPixel());
+                break;
+        }
     }
 
     @Override

@@ -31,8 +31,7 @@ public final class ParabolaDrawer extends JFrame {
         panel.addKeyListener(keyListener);
         panel.setFocusable(true);
         panel.requestFocus();
-        addKeyListener(keyListener);
-        getContentPane().addKeyListener(keyListener);
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(screenDimension);
         setResizable(false);

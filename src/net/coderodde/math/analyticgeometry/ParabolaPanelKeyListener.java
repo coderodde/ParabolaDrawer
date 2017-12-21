@@ -68,7 +68,6 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 zoom = parabolaPanel.getUnitsPerPixel();
                 parabolaPanel.setUnitsPerPixel(zoom / 1.1);
                 parabolaPanel.repaint();
-                System.out.println("zoom: " + parabolaPanel.getUnitsPerPixel());
                 break;
         }
     }

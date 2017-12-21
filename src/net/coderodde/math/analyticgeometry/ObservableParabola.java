@@ -72,6 +72,14 @@ public final class ObservableParabola {
         this.parameterListeners.remove(listener);
     }
     
+    public RealFunction getPartialFunction1() {
+        return new ParabolaFunction(this, ParabolaFunction.Part.PART_A);
+    }
+    
+    public RealFunction getPartialFunction2() {
+        return new ParabolaFunction(this, ParabolaFunction.Part.PART_B);
+    }
+    
     private double checkX(double x) {
         return checkNotNaN(x, "The x-coordinate is NaN.");
     }

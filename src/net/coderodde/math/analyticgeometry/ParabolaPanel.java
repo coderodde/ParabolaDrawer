@@ -139,7 +139,7 @@ public final class ParabolaPanel
        RealFunction part1 = parabola.getPartialFunction1();
        RealFunction part2 = parabola.getPartialFunction2();
        int width = getWidth();
-       double worldX = (width >>> 1) * unitsPerPixel;
+       double worldX = centerX - (width >>> 1) * unitsPerPixel;
        double previousWorldY = part1.calculateY(worldX);
        double currentWorldY;
        
@@ -148,15 +148,15 @@ public final class ParabolaPanel
            currentWorldY = part1.calculateY(worldX);
            
            if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-               int y1 = (int) currentWorldY;
-               int y2 = (int) previousWorldY;
+               int y1 = (int)((currentWorldY - centerY)  / unitsPerPixel);
+               int y2 = (int)((previousWorldY - centerY) / unitsPerPixel);
                g.drawLine(x - 1, y1, x, y2);
            }
            
            previousWorldY = currentWorldY;
        }
        
-       worldX = (width >>> 1) * unitsPerPixel;
+       worldX = centerX + (width >>> 1) * unitsPerPixel;
        previousWorldY = part2.calculateY(worldX);
        
        for (int x = 1; x < width; ++x) {
@@ -164,8 +164,8 @@ public final class ParabolaPanel
            currentWorldY = part2.calculateY(worldX);
            
            if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-               int y1 = (int) currentWorldY;
-               int y2 = (int) previousWorldY;
+               int y1 = (int)(currentWorldY / unitsPerPixel);
+               int y2 = (int)(previousWorldY / unitsPerPixel);
                g.drawLine(x - 1, y1, x, y2);
            }
            

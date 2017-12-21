@@ -43,6 +43,10 @@ public class ParabolaFunction implements RealFunction {
      */
     @Override
     public double calculateY(double x) {
+        if (alpha == 0.0) {
+            return simpleParabolaCalculateY(x);
+        }
+        
         double tDiscriminant = computeDiscriminant(alpha, beta, x, vertexX);
         double t = 
                 part == Part.PART_A ?
@@ -57,6 +61,11 @@ public class ParabolaFunction implements RealFunction {
         double b = beta * t * t;
         
         return yS + Math.sqrt(a * a + b * b);
+    }
+    
+    private double simpleParabolaCalculateY(double x) {
+        double dist = x - vertexX;
+        return vertexY + beta * dist * dist;
     }
     
     /**

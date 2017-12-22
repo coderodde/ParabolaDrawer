@@ -139,38 +139,47 @@ public final class ParabolaPanel
        RealFunction part1 = parabola.getPartialFunction1();
        RealFunction part2 = parabola.getPartialFunction2();
        int width = getWidth();
-       double worldX = centerX - (width >>> 1) * unitsPerPixel;
+       int height = getHeight();
+       int halfWidth = width >>> 1;
+       int halfHeight = height >>> 1;
+       double worldX = centerX - halfWidth * unitsPerPixel;
        double previousWorldY = part1.calculateY(worldX);
        double currentWorldY;
+       double vertexY = parabola.getVertexX();
+       int previousY = 0;
        
-       for (int x = 1; x < width; ++x) {
-           worldX += unitsPerPixel;
+       for (int x = 0; x < width; ++x) {
+           // We could have written simply 'worldX += unitsPerPixel', but that
+           // way (in principle) we would accumulate error in representation of
+           // that variable.
+           worldX = centerX - (halfWidth - x) * unitsPerPixel;
            currentWorldY = part1.calculateY(worldX);
            
            if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-               int y1 = (int)((currentWorldY - centerY)  / unitsPerPixel);
-               int y2 = (int)((previousWorldY - centerY) / unitsPerPixel);
-               g.drawLine(x - 1, y1, x, y2);
+               int currentY = halfHeight - 
+                              (int)((vertexY + centerY + currentWorldY) / 
+                                    (unitsPerPixel));
+               
+               g.drawLine(x - 1, previousY, x, currentY);
+               previousY = currentY;
            }
            
            previousWorldY = currentWorldY;
        }
        
-       worldX = centerX + (width >>> 1) * unitsPerPixel;
-       previousWorldY = part2.calculateY(worldX);
-       
-       for (int x = 1; x < width; ++x) {
-           worldX += unitsPerPixel;
-           currentWorldY = part2.calculateY(worldX);
-           
-           if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-               int y1 = (int)(currentWorldY / unitsPerPixel);
-               int y2 = (int)(previousWorldY / unitsPerPixel);
-               g.drawLine(x - 1, y1, x, y2);
-           }
-           
-           previousWorldY = currentWorldY;
-       }
+//       worldX = centerX - halfWidth * unitsPerPixel;
+//       previousWorldY = part2.calculateY(worldX);
+//       
+//       for (int x = 1; x < width; ++x) {
+//           worldX += unitsPerPixel;
+//           currentWorldY = part2.calculateY(worldX);
+//           
+//           if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
+//               
+//           }
+//           
+//           previousWorldY = currentWorldY;
+//       }
     }
     
     private void paintXAxis(Graphics g) {

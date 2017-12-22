@@ -21,6 +21,7 @@ public final class ParabolaPanel
     private static final Color DEFAULT_X_AXIS_COLOR = Color.RED;
     private static final Color DEFAULT_Y_AXIS_COLOR = Color.BLUE;
     private static final Color DEFAULT_PARABOLA_COLOR = Color.BLACK;
+    private static final int CONTROL_BALL_RADIUS = 7; // 7 pixels.
     
     private double unitsPerPixel;
     private double centerX;
@@ -166,20 +167,18 @@ public final class ParabolaPanel
            
            previousWorldY = currentWorldY;
        }
+      
+       // Paint a small ball at the vertex of the parabola.
+       int x = halfWidth + 
+              (int)((parabola.getVertexX() - centerX) / unitsPerPixel);
        
-//       worldX = centerX - halfWidth * unitsPerPixel;
-//       previousWorldY = part2.calculateY(worldX);
-//       
-//       for (int x = 1; x < width; ++x) {
-//           worldX += unitsPerPixel;
-//           currentWorldY = part2.calculateY(worldX);
-//           
-//           if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-//               
-//           }
-//           
-//           previousWorldY = currentWorldY;
-//       }
+       int y = halfHeight + 
+              (int)((parabola.getVertexY() - centerY) / unitsPerPixel);
+       
+       g.fillOval(x - CONTROL_BALL_RADIUS, 
+                  y - CONTROL_BALL_RADIUS,
+                  2 * CONTROL_BALL_RADIUS, 
+                  2 * CONTROL_BALL_RADIUS);
     }
     
     private void paintXAxis(Graphics g) {

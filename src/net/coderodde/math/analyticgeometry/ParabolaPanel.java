@@ -98,7 +98,24 @@ public final class ParabolaPanel
         this.parabolaColor = 
                 Objects.requireNonNull(color, "The color of the parabola.");
     }
+    
+    public ObservableParabola getParabola() {
+        return parabola;
+    }
 
+    public boolean pointContainsParabolaVertex(int x, int y) {
+        int vertexX = (getWidth() >>> 1) + 
+                      (int)((parabola.getVertexX() - centerX) / unitsPerPixel);
+        
+        int vertexY = (getHeight() >>> 1) +
+                      (int)((parabola.getVertexY() + centerY) / unitsPerPixel);
+        
+        int dx = vertexX - x;
+        int dy = vertexY - y;
+        
+        return Math.sqrt(dx * dx + dy * dy) < CONTROL_BALL_RADIUS;
+    }
+    
     @Override
     public void onParabolaParameterChange() {
         repaint();

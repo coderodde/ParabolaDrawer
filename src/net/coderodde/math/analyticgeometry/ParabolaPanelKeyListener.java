@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 public class ParabolaPanelKeyListener implements KeyListener {
 
     private ParabolaPanel parabolaPanel;
+    private volatile boolean shiftKeyPressed;
     
     public void setParabolaPanel(ParabolaPanel parabolaPanel) {
         this.parabolaPanel = parabolaPanel;
@@ -19,43 +20,70 @@ public class ParabolaPanelKeyListener implements KeyListener {
     
     @Override
     public void keyTyped(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_W:
-                double zoom = parabolaPanel.getUnitsPerPixel();
-                parabolaPanel.setUnitsPerPixel(zoom * 1.1);
-                parabolaPanel.repaint();
-                break;
-                
-            case KeyEvent.VK_S:
-                zoom = parabolaPanel.getUnitsPerPixel();
-                parabolaPanel.setUnitsPerPixel(zoom / 1.1);
-                parabolaPanel.repaint();
-                System.out.println("zoom: " + parabolaPanel.getUnitsPerPixel());
-                break;
-        }
+        
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                parabolaPanel.setCenterY(parabolaPanel.getCenterY() + 0.01);
-                parabolaPanel.repaint();
+                if (shiftKeyPressed) {
+                    double x = parabolaPanel.getParabola().getVertexX();
+                    double y = parabolaPanel.getParabola().getVertexY();
+                    parabolaPanel.getParabola()
+                                 .setVertex(
+                                         x, 
+                                         y - parabolaPanel.getUnitsPerPixel());
+                } else {
+                    parabolaPanel.setCenterY(parabolaPanel.getCenterY() - 0.01);
+                    parabolaPanel.repaint();
+                }
+                
                 break;
                 
             case KeyEvent.VK_DOWN:
-                parabolaPanel.setCenterY(parabolaPanel.getCenterY() - 0.01);
-                parabolaPanel.repaint();
+                if (shiftKeyPressed) {
+                    double x = parabolaPanel.getParabola().getVertexX();
+                    double y = parabolaPanel.getParabola().getVertexY();
+                    parabolaPanel.getParabola()
+                                 .setVertex(
+                                         x,
+                                         y + parabolaPanel.getUnitsPerPixel());
+                } else {
+                    parabolaPanel.setCenterY(parabolaPanel.getCenterY() + 0.01);
+                    parabolaPanel.repaint();
+                }
+                    
                 break;
                 
             case KeyEvent.VK_LEFT:
-                parabolaPanel.setCenterX(parabolaPanel.getCenterX() + 0.01);
-                parabolaPanel.repaint();
+                if (shiftKeyPressed) {
+                    double x = parabolaPanel.getParabola().getVertexX();
+                    double y = parabolaPanel.getParabola().getVertexY();
+                    parabolaPanel.getParabola()
+                                 .setVertex(
+                                         x - parabolaPanel.getUnitsPerPixel(),
+                                         y);
+                } else {
+                    parabolaPanel.setCenterX(parabolaPanel.getCenterX() - 0.01);
+                    parabolaPanel.repaint();
+                }
+                    
                 break;
                 
             case KeyEvent.VK_RIGHT:
-                parabolaPanel.setCenterX(parabolaPanel.getCenterX() - 0.01);
-                parabolaPanel.repaint();
+                if (shiftKeyPressed) {
+                    double x = parabolaPanel.getParabola().getVertexX();
+                    double y = parabolaPanel.getParabola().getVertexY();
+                    parabolaPanel.getParabola()
+                                 .setVertex(
+                                         x + parabolaPanel.getUnitsPerPixel(),
+                                         y);
+                } else {
+                    parabolaPanel.setCenterX(parabolaPanel.getCenterX() + 0.01);
+                    parabolaPanel.repaint();
+                }
+                    
                 break;
                 
             case KeyEvent.VK_W:
@@ -69,11 +97,19 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 parabolaPanel.setUnitsPerPixel(zoom / 1.1);
                 parabolaPanel.repaint();
                 break;
+                
+            case KeyEvent.VK_SHIFT:
+                shiftKeyPressed = true;
+                break;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SHIFT:
+                shiftKeyPressed = false;
+                break;
+        }
     }
 }

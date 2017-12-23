@@ -30,6 +30,8 @@ public final class ParabolaDrawerApp extends JFrame {
         ParabolaPanelKeyListener keyListener = new ParabolaPanelKeyListener();
         keyListener.setParabolaPanel(panel);
         getContentPane().add(panel);
+        
+        parabola.addParameterListener(panel);
         panel.addKeyListener(keyListener);
         panel.addMouseListener(mouseListener);
         panel.addMouseMotionListener(mouseListener);

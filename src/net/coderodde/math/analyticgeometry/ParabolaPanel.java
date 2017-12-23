@@ -33,7 +33,8 @@ public final class ParabolaPanel
     
     public ParabolaPanel(ObservableParabola parabola) {
         this.parabola = 
-                Objects.requireNonNull(parabola, "The input parabola is null.");
+                Objects.requireNonNull(parabola, 
+                                       "The input parabola is null.");
         this.unitsPerPixel = DEFAULT_UNITS_PER_PIXEL;
         this.centerX = DEFAULT_CENTER_X;
         this.centerY = DEFAULT_CENTER_Y;
@@ -160,23 +161,25 @@ public final class ParabolaPanel
        int height = getHeight();
        int halfWidth = width >>> 1;
        int halfHeight = height >>> 1;
+       int previousY = 0;
        double worldX = centerX - halfWidth * unitsPerPixel;
        double previousWorldY = part1.calculateY(worldX);
        double currentWorldY;
-       double vertexY = parabola.getVertexX();
-       int previousY = 0;
        
        for (int x = 0; x < width; ++x) {
            // We could have written simply 'worldX += unitsPerPixel', but that
            // way (in principle) we would accumulate error in representation of
            // that variable.
-           worldX = centerX - (halfWidth - x) * unitsPerPixel;
+           worldX = centerX + (x - halfWidth) * unitsPerPixel;
            currentWorldY = part1.calculateY(worldX);
            
            if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-               int currentY = halfHeight - 
-                              (int)((vertexY + centerY + currentWorldY) / 
-                                    (unitsPerPixel));
+               int currentY = halfHeight - (int)(currentWorldY / unitsPerPixel)
+                                         - (int)(centerY / unitsPerPixel)
+                                         + 2 * (int)(parabola.getVertexY() / unitsPerPixel);
+//               int currentY = halfHeight - 
+//                              (int)((/*vertexY + */centerY + currentWorldY) / 
+//                                    (unitsPerPixel));
                
                g.drawLine(x - 1, previousY, x, currentY);
                previousY = currentY;

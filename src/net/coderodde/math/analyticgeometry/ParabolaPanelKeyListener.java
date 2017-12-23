@@ -11,8 +11,20 @@ import java.awt.event.KeyListener;
  */
 public class ParabolaPanelKeyListener implements KeyListener {
 
+    /**
+     * After this number of milliseconds, the speed of shifting/moving
+     * increases.
+     */
+    private static final long INCREASE_SPEED_MILLISECONDS = 3000L;
+    private static final long INCREASE_SPEED_KEYS_TYPED = 6;
+    private static final double SPEEDUP_FACTOR = 5.0;
+    
+    
     private ParabolaPanel parabolaPanel;
     private volatile boolean shiftKeyPressed;
+    private volatile long shiftKeyPressTime;
+    private volatile long keysTypedAtShiftPress;
+    private volatile long keysTyped;
     
     public void setParabolaPanel(ParabolaPanel parabolaPanel) {
         this.parabolaPanel = parabolaPanel;
@@ -25,15 +37,15 @@ public class ParabolaPanelKeyListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        keysTyped++;
+        
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
                 if (shiftKeyPressed) {
                     double x = parabolaPanel.getParabola().getVertexX();
                     double y = parabolaPanel.getParabola().getVertexY();
-                    parabolaPanel.getParabola()
-                                 .setVertex(
-                                         x, 
-                                         y - parabolaPanel.getUnitsPerPixel());
+                    double speed = getSpeed();
+                    parabolaPanel.getParabola().setVertex(x, y - speed);
                 } else {
                     parabolaPanel.setCenterY(parabolaPanel.getCenterY() - 0.01);
                     parabolaPanel.repaint();
@@ -45,10 +57,8 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 if (shiftKeyPressed) {
                     double x = parabolaPanel.getParabola().getVertexX();
                     double y = parabolaPanel.getParabola().getVertexY();
-                    parabolaPanel.getParabola()
-                                 .setVertex(
-                                         x,
-                                         y + parabolaPanel.getUnitsPerPixel());
+                    double speed = getSpeed();
+                    parabolaPanel.getParabola().setVertex(x, y + speed);
                 } else {
                     parabolaPanel.setCenterY(parabolaPanel.getCenterY() + 0.01);
                     parabolaPanel.repaint();
@@ -60,10 +70,8 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 if (shiftKeyPressed) {
                     double x = parabolaPanel.getParabola().getVertexX();
                     double y = parabolaPanel.getParabola().getVertexY();
-                    parabolaPanel.getParabola()
-                                 .setVertex(
-                                         x - parabolaPanel.getUnitsPerPixel(),
-                                         y);
+                    double speed = getSpeed();
+                    parabolaPanel.getParabola().setVertex(x - speed, y);
                 } else {
                     parabolaPanel.setCenterX(parabolaPanel.getCenterX() - 0.01);
                     parabolaPanel.repaint();
@@ -75,10 +83,8 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 if (shiftKeyPressed) {
                     double x = parabolaPanel.getParabola().getVertexX();
                     double y = parabolaPanel.getParabola().getVertexY();
-                    parabolaPanel.getParabola()
-                                 .setVertex(
-                                         x + parabolaPanel.getUnitsPerPixel(),
-                                         y);
+                    double speed = getSpeed();
+                    parabolaPanel.getParabola().setVertex(x + speed, y);
                 } else {
                     parabolaPanel.setCenterX(parabolaPanel.getCenterX() + 0.01);
                     parabolaPanel.repaint();
@@ -87,19 +93,42 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 break;
                 
             case KeyEvent.VK_W:
-                double zoom = parabolaPanel.getUnitsPerPixel();
-                parabolaPanel.setUnitsPerPixel(zoom * 1.1);
-                parabolaPanel.repaint();
+                if (shiftKeyPressed) {
+                    double currentRotationAngle = 
+                            parabolaPanel.getParabola().getAlpha();
+                    
+                    double nextRotationAngle = currentRotationAngle +
+                                               Math.PI / 180.0;
+                    
+                    parabolaPanel.getParabola().setAlpha(nextRotationAngle);
+                } else {
+                    double zoom = parabolaPanel.getUnitsPerPixel();
+                    parabolaPanel.setUnitsPerPixel(zoom * 1.1);
+                    parabolaPanel.repaint();
+                }
+                
                 break;
 
             case KeyEvent.VK_S:
-                zoom = parabolaPanel.getUnitsPerPixel();
-                parabolaPanel.setUnitsPerPixel(zoom / 1.1);
-                parabolaPanel.repaint();
+                if (shiftKeyPressed) {
+                    double currentRotationAngle = 
+                            parabolaPanel.getParabola().getAlpha();
+                    
+                    double nextRotationAngle = currentRotationAngle -
+                                               Math.PI / 180.0;
+                    
+                    parabolaPanel.getParabola().setAlpha(nextRotationAngle);
+                } else {
+                    double zoom = parabolaPanel.getUnitsPerPixel();
+                    parabolaPanel.setUnitsPerPixel(zoom / 1.1);
+                    parabolaPanel.repaint();
+                }
                 break;
                 
             case KeyEvent.VK_SHIFT:
                 shiftKeyPressed = true;
+                shiftKeyPressTime = System.currentTimeMillis();
+                keysTypedAtShiftPress = keysTyped;
                 break;
         }
     }
@@ -111,5 +140,17 @@ public class ParabolaPanelKeyListener implements KeyListener {
                 shiftKeyPressed = false;
                 break;
         }
+    }
+    
+    private double getSpeed() {
+        long timeElapsedSinceShiftKeyPressed = System.currentTimeMillis() - 
+                                               shiftKeyPressTime;
+        
+        long currentKeysTyped = keysTyped - keysTypedAtShiftPress;
+        
+        return timeElapsedSinceShiftKeyPressed < INCREASE_SPEED_MILLISECONDS &&
+               currentKeysTyped >= INCREASE_SPEED_KEYS_TYPED ?
+               parabolaPanel.getUnitsPerPixel() * SPEEDUP_FACTOR :
+               parabolaPanel.getUnitsPerPixel();
     }
 }

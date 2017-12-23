@@ -166,6 +166,7 @@ public final class ParabolaPanel
        double previousWorldY = part1.calculateY(worldX);
        double currentWorldY;
        
+       // Draw the first part function:
        for (int x = 0; x < width; ++x) {
            // We could have written simply 'worldX += unitsPerPixel', but that
            // way (in principle) we would accumulate error in representation of
@@ -174,17 +175,36 @@ public final class ParabolaPanel
            currentWorldY = part1.calculateY(worldX);
            
            if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
-               int currentY = halfHeight - (int)(currentWorldY / unitsPerPixel)
-                                         - (int)(centerY / unitsPerPixel)
-                                         + 2 * (int)(parabola.getVertexY() / unitsPerPixel);
-//               int currentY = halfHeight - 
-//                              (int)((/*vertexY + */centerY + currentWorldY) / 
-//                                    (unitsPerPixel));
+               int currentY = halfHeight + 
+                             (int)((2 * parabola.getVertexY()
+                                      - currentWorldY 
+                                      - centerY) / unitsPerPixel);
                
                g.drawLine(x - 1, previousY, x, currentY);
                previousY = currentY;
            }
            
+           previousWorldY = currentWorldY;
+       }
+       
+       worldX = centerX - halfWidth * unitsPerPixel;
+       previousWorldY = part2.calculateY(worldX);
+       
+       // Draw the second part function:
+       for (int x = 0; x < width; ++x) {
+           worldX = centerX + (x - halfWidth) * unitsPerPixel;
+           currentWorldY = part2.calculateY(worldX);
+           
+           if (!Double.isNaN(currentWorldY) && !Double.isNaN(previousWorldY)) {
+               int currentY = halfHeight +
+                             (int)((2 * parabola.getVertexY()
+                                      - currentWorldY
+                                      - centerY) / unitsPerPixel);
+               
+               g.drawLine(x - 1, previousY, x, currentY);
+               previousY = currentY;
+           }
+               
            previousWorldY = currentWorldY;
        }
       
